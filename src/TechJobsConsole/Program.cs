@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace TechJobsConsole
 {
@@ -43,7 +44,7 @@ namespace TechJobsConsole
                         List<string> results = JobData.FindAll(columnChoice);
 
                         Console.WriteLine("\n*** All " + columnChoices[columnChoice] + " Values ***");
-                        foreach (string item in results)
+                        foreach (string item in results.OrderBy(r => r))
                         {
                             Console.WriteLine(item);
                         }
@@ -63,7 +64,8 @@ namespace TechJobsConsole
                     // Fetch results
                     if (columnChoice.Equals("all"))
                     {
-                        Console.WriteLine("Search all fields not yet implemented.");
+                        //Console.WriteLine("Search all fields not yet implemented.");
+                        PrintJobs(JobData.FindByValue(searchTerm));
                     }
                     else
                     {
@@ -118,7 +120,27 @@ namespace TechJobsConsole
 
         private static void PrintJobs(List<Dictionary<string, string>> someJobs)
         {
-            Console.WriteLine("PrintJobs is not implemented yet");
+            if (someJobs.Count == 0)
+            {
+                Console.WriteLine("There are no results.");
+
+                return;
+            }
+
+            foreach (Dictionary<string, string> job in someJobs.OrderBy(j => j.Values.First()))
+                PrintJob(job);
+        }
+
+        private static void PrintJob(Dictionary<string, string> job)
+        {
+            Console.WriteLine("*****");
+
+            foreach(KeyValuePair<string, string> entry in job)
+            {
+                Console.WriteLine($"{entry.Key}: {entry.Value}");
+            }
+
+            Console.WriteLine("*****\n");
         }
     }
 }

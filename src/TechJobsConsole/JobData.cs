@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
+using System.Data;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Text;
 
@@ -8,12 +10,13 @@ namespace TechJobsConsole
     class JobData
     {
         static List<Dictionary<string, string>> AllJobs = new List<Dictionary<string, string>>();
+
         static bool IsDataLoaded = false;
 
         public static List<Dictionary<string, string>> FindAll()
         {
             LoadData();
-            return AllJobs;
+            return AllJobs.ToList();
         }
 
         /*
@@ -137,6 +140,30 @@ namespace TechJobsConsole
             valueBuilder.Clear();
 
             return rowValues.ToArray();
+        }
+
+        public static List<Dictionary<string, string>> FindByValue(string value)
+        {
+            value = value.ToLower();
+
+            List<Dictionary<string, string>> allJobs = FindAll();
+
+            List<Dictionary<string, string>> result = new List<Dictionary<string, string>>();
+
+            foreach(Dictionary<string, string> job in allJobs)
+            {
+                foreach (KeyValuePair<string, string> column in job)
+                {
+                    if (column.Value.ToLower().Contains(value))
+                    {
+                        result.Add(job);
+
+                        break;
+                    }
+                }
+            }
+
+            return result;
         }
     }
 }
